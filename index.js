@@ -145,6 +145,7 @@ Fly.prototype = {
    */
   initCloneNode: function(x, y) {
     const { $flyEl } = this;
+    $flyEl.classList.add('e-fly-clone')
     Object.assign($flyEl.style, {
       position: 'fixed',
       left: `${x}px`,
