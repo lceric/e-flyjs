@@ -37,6 +37,14 @@ Fly.prototype = {
     const offsetX = targetX - originX;
     const offsetY = targetY - originY;
 
+    // 如果speed过小，则置为1，并使用1计算持续时间
+    let speed = offsetX / this.duration;
+    if (speed < this.minSpeed) {
+      speed = this.minSpeed
+      this.duration = offsetX / speed
+    }
+    this.speed = speed
+
     this.offsetX = offsetX;
     this.offsetY = offsetY;
     this.b = (offsetY - this.a * offsetX * offsetX) / offsetX;
@@ -118,8 +126,11 @@ Fly.prototype = {
   // eachStep
   step: function(now) {
     let x, y;
-    
-    if (now > this.end) {
+    x = this.speed * (now - this.start);
+    let calcRes = calcPoint(this.a, this.b, x);
+    y = calcRes.y
+    console.log(now > this.end || y > this.targetY || x > this.targetX)
+    if (now > this.end || y > this.targetY || x > this.targetX) {
       x = this.offsetX;
       y = this.offsetY;
       this.moveTo(x, y);
@@ -129,25 +140,12 @@ Fly.prototype = {
         this.fn.stop instanceof Function &&
         this.fn.stop.call(this);
     } else {
-      let speed = this.offsetX / this.duration;
-      if (speed < this.minSpeed) {
-        speed = this.minSpeed
-      }
-      x = speed * (now - this.start);
-      let calcRes = calcPoint(this.a, this.b, x);
-      y = calcRes.y
-      if (y > this.offsetY) {
-        swapStyle(this.$flyEl, {
-          opacity: 0
-        })
-      }
       this.moveTo(x, y);
       // 步进回调
       this.fn.step &&
         this.fn.step instanceof Function &&
         this.fn.step.call(this);
     }
-    // 执行动画
   },
   /**
    * 初始化克隆元素
