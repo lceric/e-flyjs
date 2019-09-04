@@ -1,0 +1,12 @@
+{
+  "name": "e-flyjs",
+  "version": "1.0.2",
+  "description": "fly.js",
+  "main": "index.js",
+  "keywords": [
+    "fly",
+    "parabola"
+  ],
+  "author": "Eric",
+  "license": "ISC"
+}
