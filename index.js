@@ -96,6 +96,7 @@ Fly.prototype = {
     this.duration = opts.duration || 1200;
     this.a = opts.a || 0.001; // 系数a
     this.timer = null; // 定时器
+    this.minSpeed = opts.minSpeed || 1
 
     this.fn = {};
     this.fn.start = opts.start; // 开始回调
@@ -117,6 +118,7 @@ Fly.prototype = {
   // eachStep
   step: function(now) {
     let x, y;
+    
     if (now > this.end) {
       x = this.offsetX;
       y = this.offsetY;
@@ -128,9 +130,18 @@ Fly.prototype = {
         this.fn.stop.call(this);
     } else {
       let speed = this.offsetX / this.duration;
-      let x = speed * (now - this.start);
+      if (speed < this.minSpeed) {
+        speed = this.minSpeed
+      }
+      x = speed * (now - this.start);
       let calcRes = calcPoint(this.a, this.b, x);
-      this.moveTo(x, calcRes.y);
+      y = calcRes.y
+      if (y > this.offsetY) {
+        swapStyle(this.$flyEl, {
+          opacity: 0
+        })
+      }
+      this.moveTo(x, y);
       // 步进回调
       this.fn.step &&
         this.fn.step instanceof Function &&
@@ -160,13 +171,17 @@ Fly.prototype = {
    * @param {*} y
    */
   removeCloneNode: function() {
-    const { opts, $flyEl } = this;
+    const { $flyEl } = this;
     // if (opts.flyEl) {
     //   swapStyle($flyEl, {
     //     opacity: 0,
     //   });
     //   return;
     // }
+    if (!$flyEl) return;
+    swapStyle($flyEl, {
+      opacity: 0,
+    });
     $flyEl && $flyEl.remove();
   },
 };
