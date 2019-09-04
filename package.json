@@ -3,6 +3,10 @@
   "version": "1.0.2",
   "description": "fly.js",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChaoLeer/e-flyjs.git"
+  },
   "keywords": [
     "fly",
     "parabola"
